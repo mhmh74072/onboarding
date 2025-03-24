@@ -3,6 +3,13 @@
 set -e
 
 ############################################
+# 0) Helper Functions
+############################################
+play_sound() {
+    afplay /System/Library/Sounds/Ping.aiff    
+}
+
+############################################
 # 1) Homebrew Setup
 ############################################
 echo "🔍 Checking for Homebrew..."
@@ -50,17 +57,6 @@ install_cli_tool() {
     fi
 }
 
-echo "📦 Installing essential applications..."
-install_cask_app google-chrome "Google Chrome"
-install_cask_app slack "Slack"
-install_cask_app visual-studio-code "Visual Studio Code"
-install_cask_app microsoft-word "Microsoft Word"
-install_cask_app microsoft-excel "Microsoft Excel"
-install_cask_app microsoft-powerpoint "Microsoft PowerPoint"
-install_cask_app microsoft-outlook "Microsoft Outlook"
-install_cask_app onedrive "OneDrive"
-echo "✅ Essential applications installed!"
-
 echo "⚙️ Installing command-line tools..."
 install_cli_tool git
 install_cli_tool node
@@ -72,6 +68,24 @@ install_cli_tool jq
 install_cli_tool tree
 
 echo "✅ Command-line tools installed!"
+
+echo "📦 Installing essential applications..."
+install_cask_app google-chrome "Google Chrome"
+install_cask_app slack "Slack"
+install_cask_app postman "Postman"
+install_cask_app visual-studio-code "Visual Studio Code"
+ln -s "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" /usr/local/bin/code
+code --install-extension ms-python.python
+code --install-extension dbaeumer.vscode-eslint
+code --install-extension esbenp.prettier-vscode
+code --install-extension openai.chatgpt
+code --install-extension GitHub.copilot
+code --install-extension GitHub.copilot-chat
+
+play_sound
+install_cask_app microsoft-office "Microsoft Office"
+
+echo "✅ Essential applications installed!"
 
 ############################################
 # 3) NVM Setup
@@ -86,13 +100,13 @@ echo "✅ NVM setup complete!"
 ############################################
 # 4) Git User Setup
 ############################################
+play_sound
 read -p "Enter your Git username: " git_username
 if [[ -z "$git_username" ]]; then
     echo "❌ Git username cannot be empty! Exiting."
     exit 1
 fi
 git config --global user.name "$git_username"
-echo "✅ Updated global Git username to $git_username"
 
 read -p "Enter your Git email: " git_email
 if [[ -z "$git_email" ]]; then
@@ -100,8 +114,6 @@ if [[ -z "$git_email" ]]; then
     exit 1
 fi
 git config --global user.email "$git_email"
-echo "✅ Updated global Git email to $git_email"
-
 git config --global core.editor "code --wait"
 git config --global init.defaultBranch main
 
@@ -117,10 +129,9 @@ echo "🔐 Checking for existing GPG key..."
 existing_gpg_key_id="$(gpg --list-secret-keys --keyid-format LONG 2>/dev/null | grep '^sec' | head -n1 | sed -E 's|.*/([^ ]+) .*|\1|')"
 
 if [ -n "$existing_gpg_key_id" ]; then
-    echo "✅ GPG key already exists (ID: $existing_gpg_key_id)."
     echo "🔑 Copying public key to clipboard..."
     gpg --armor --export "$existing_gpg_key_id" | pbcopy
-    echo "✅ Public key copied to clipboard!"
+    echo "✅ Public GPG key copied to clipboard!"
     echo "(Here is the same key, displayed in terminal for reference:)"
     gpg --armor --export "$existing_gpg_key_id"
 else
@@ -145,10 +156,9 @@ EOF
 
     # Grab the newly generated key ID
     new_gpg_key_id="$(gpg --list-secret-keys --keyid-format LONG 2>/dev/null | grep '^sec' | head -n1 | sed -E 's|.*/([^ ]+) .*|\1|')"
-    echo "✅ GPG key generated (ID: $new_gpg_key_id)."
     echo "🔑 Copying public key to clipboard..."
     gpg --armor --export "$new_gpg_key_id" | pbcopy
-    echo "✅ Public key copied to clipboard!"
+    echo "✅ Public key copied to clipboard! (ID: $new_gpg_key_id)"
     echo "🚀 It is now ready to be pasted into your Bitbucket GPG key settings."
     echo "(Here is the same key, displayed in terminal for reference:)"
     gpg --armor --export "$new_gpg_key_id"
@@ -156,9 +166,10 @@ EOF
     existing_gpg_key_id="$new_gpg_key_id"
 fi
 
-echo "📌 Please add this key to Bitbucket following the instructions here:"
-echo "🔗 https://confluence.atlassian.com/bitbucketserver/using-gpg-keys-913477014.html#UsingGPGkeys-add"
+echo "⚠️ IMPORTANT: Please add this key to Bitbucket following the instructions here:"
+echo "https://confluence.atlassian.com/bitbucketserver/using-gpg-keys-913477014.html#UsingGPGkeys-add"
 echo "🚀 Once you've added your key, press any key to continue..."
+play_sound
 read -n 1 -s
 
 if [ -n "$existing_gpg_key_id" ]; then
