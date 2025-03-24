@@ -41,7 +41,6 @@ install_cask_app() {
         if brew list --cask "$app_name" &>/dev/null; then
             echo "⚠️  $app_name is registered in Homebrew but missing from disk. Forcing uninstall..."
             brew uninstall --cask --force "$app_name"
-            brew cleanup --zap "$app_name"
         fi
         echo "📦 Installing $app_name to /Applications..."
         brew install --cask "$app_name"
@@ -59,6 +58,7 @@ install_cli_tool() {
 
 echo "⚙️ Installing command-line tools..."
 install_cli_tool git
+install_cli_tool gpg
 install_cli_tool node
 install_cli_tool nvm
 install_cli_tool python
