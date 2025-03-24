@@ -74,7 +74,6 @@ install_cask_app google-chrome "Google Chrome"
 install_cask_app slack "Slack"
 install_cask_app postman "Postman"
 install_cask_app visual-studio-code "Visual Studio Code"
-ln -s "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" /usr/local/bin/code
 code --install-extension ms-python.python
 code --install-extension dbaeumer.vscode-eslint
 code --install-extension esbenp.prettier-vscode
@@ -82,7 +81,6 @@ code --install-extension openai.chatgpt
 code --install-extension GitHub.copilot
 code --install-extension GitHub.copilot-chat
 
-play_sound
 install_cask_app microsoft-office "Microsoft Office"
 
 echo "✅ Essential applications installed!"
