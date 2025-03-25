@@ -27,7 +27,7 @@ echo "🔄 Updating Homebrew..."
 brew update && brew upgrade
 
 ############################################
-# 2) Install Applications & CLI Tools
+# 2) Install CLI Tools
 ############################################
 
 install_cask_app() {
@@ -43,26 +43,8 @@ install_cask_app() {
             echo "⚠️  $app_name is registered in Homebrew but missing from disk. Forcing uninstall..."
             brew uninstall --cask --force "$app_name"
         fi
-
         echo "📦 Installing $app_name to /Applications..."
-        local max_attempts=4
-        local attempt=1
-
-        while (( attempt <= max_attempts )); do
-            if brew install --cask "$app_name"; then
-                echo "✅ Successfully installed $app_name on attempt #$attempt"
-                break
-            else
-                echo "❌ Attempt #$attempt to install $app_name failed."
-                if (( attempt == max_attempts )); then
-                    echo "🚫 Failed to install $app_name after $max_attempts attempts. Skipping."
-                else
-                    echo "⏳ Retrying in 5 seconds..."
-                    sleep 5
-                fi
-                ((attempt++))
-            fi
-        done
+        brew install --cask "$app_name"
     fi
 }
 
@@ -196,5 +178,50 @@ if [ -n "$existing_gpg_key_id" ]; then
 else
     echo "❌ No GPG key found or generated. Cannot configure signing."
 fi
+
+############################################
+# 2) Install CLI Tools
+############################################
+
+install_cask_app() {
+    local app_name="$1"
+    local app_folder_name="${2:-$app_name}"
+    local user_app="$HOME/Applications/$app_folder_name.app"
+
+    if [ -d "$user_app" ]; then
+        echo "✅ $app_name is already installed at $user_app. Skipping."
+    else
+        echo "🧹 App not found, checking for stale Homebrew install..."
+        if brew list --cask "$app_name" &>/dev/null; then
+            echo "⚠️  $app_name is registered in Homebrew but missing from disk. Forcing uninstall..."
+            brew uninstall --cask --force "$app_name"
+        fi
+        echo "📦 Installing $app_name to /Applications..."
+        brew install --cask "$app_name"
+    fi
+}
+
+echo "📦 Installing essential applications..."
+install_cask_app google-chrome "Google Chrome"
+install_cask_app slack "Slack"
+install_cask_app postman "Postman"
+install_cask_app visual-studio-code "Visual Studio Code"
+code --install-extension ms-python.python
+code --install-extension dbaeumer.vscode-eslint
+code --install-extension esbenp.prettier-vscode
+code --install-extension openai.chatgpt
+code --install-extension GitHub.copilot
+code --install-extension GitHub.copilot-chat
+
+install_cask_app --cask microsoft-word
+install_cask_app --cask microsoft-excel
+install_cask_app --cask microsoft-powerpoint
+install_cask_app --cask microsoft-outlook
+install_cask_app --cask microsoft-onenote
+install_cask_app --cask microsoft-teams
+install_cask_app --cask microsoft-remote-desktop
+install_cask_app --cask microsoft-auto-update
+
+echo "✅ Essential applications installed!"
 
 echo "🚀 Setup complete! Restart your terminal."
