@@ -43,8 +43,26 @@ install_cask_app() {
             echo "⚠️  $app_name is registered in Homebrew but missing from disk. Forcing uninstall..."
             brew uninstall --cask --force "$app_name"
         fi
+
         echo "📦 Installing $app_name to /Applications..."
-        brew install --cask "$app_name"
+        local max_attempts=4
+        local attempt=1
+
+        while (( attempt <= max_attempts )); do
+            if brew install --cask "$app_name"; then
+                echo "✅ Successfully installed $app_name on attempt #$attempt"
+                break
+            else
+                echo "❌ Attempt #$attempt to install $app_name failed."
+                if (( attempt == max_attempts )); then
+                    echo "🚫 Failed to install $app_name after $max_attempts attempts. Skipping."
+                else
+                    echo "⏳ Retrying in 5 seconds..."
+                    sleep 5
+                fi
+                ((attempt++))
+            fi
+        done
     fi
 }
 
