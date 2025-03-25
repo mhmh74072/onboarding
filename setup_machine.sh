@@ -29,25 +29,6 @@ brew update && brew upgrade
 ############################################
 # 2) Install CLI Tools
 ############################################
-
-install_cask_app() {
-    local app_name="$1"
-    local app_folder_name="${2:-$app_name}"
-    local user_app="$HOME/Applications/$app_folder_name.app"
-
-    if [ -d "$user_app" ]; then
-        echo "✅ $app_name is already installed at $user_app. Skipping."
-    else
-        echo "🧹 App not found, checking for stale Homebrew install..."
-        if brew list --cask "$app_name" &>/dev/null; then
-            echo "⚠️  $app_name is registered in Homebrew but missing from disk. Forcing uninstall..."
-            brew uninstall --cask --force "$app_name"
-        fi
-        echo "📦 Installing $app_name to /Applications..."
-        brew install --cask "$app_name"
-    fi
-}
-
 install_cli_tool() {
     if ! brew list "$1" &>/dev/null; then
         echo "⚙️ Installing $1..."
@@ -69,22 +50,6 @@ install_cli_tool jq
 install_cli_tool tree
 
 echo "✅ Command-line tools installed!"
-
-echo "📦 Installing essential applications..."
-install_cask_app google-chrome "Google Chrome"
-install_cask_app slack "Slack"
-install_cask_app postman "Postman"
-install_cask_app visual-studio-code "Visual Studio Code"
-code --install-extension ms-python.python
-code --install-extension dbaeumer.vscode-eslint
-code --install-extension esbenp.prettier-vscode
-code --install-extension openai.chatgpt
-code --install-extension GitHub.copilot
-code --install-extension GitHub.copilot-chat
-
-install_cask_app microsoft-office "Microsoft Office"
-
-echo "✅ Essential applications installed!"
 
 ############################################
 # 3) NVM Setup
@@ -180,7 +145,7 @@ else
 fi
 
 ############################################
-# 2) Install CLI Tools
+# 7) Install CLI Tools
 ############################################
 
 install_cask_app() {
@@ -219,9 +184,6 @@ install_cask_app --cask microsoft-powerpoint
 install_cask_app --cask microsoft-outlook
 install_cask_app --cask microsoft-onenote
 install_cask_app --cask microsoft-teams
-install_cask_app --cask microsoft-remote-desktop
 install_cask_app --cask microsoft-auto-update
-
-echo "✅ Essential applications installed!"
 
 echo "🚀 Setup complete! Restart your terminal."
