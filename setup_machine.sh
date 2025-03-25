@@ -178,12 +178,12 @@ code --install-extension openai.chatgpt
 code --install-extension GitHub.copilot
 code --install-extension GitHub.copilot-chat
 
-install_cask_app --cask microsoft-word
-install_cask_app --cask microsoft-excel
-install_cask_app --cask microsoft-powerpoint
-install_cask_app --cask microsoft-outlook
-install_cask_app --cask microsoft-onenote
-install_cask_app --cask microsoft-teams
-install_cask_app --cask microsoft-auto-update
+install_cask_app microsoft-word
+install_cask_app microsoft-excel
+install_cask_app microsoft-powerpoint
+install_cask_app microsoft-outlook
+install_cask_app microsoft-onenote
+install_cask_app microsoft-teams
+install_cask_app microsoft-auto-update
 
 echo "🚀 Setup complete! Restart your terminal."
